@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response;
 public class DecisionTreeService {
     
     private final String newline = System.getProperty("line.separator");
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy_HmsS");
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy-HmsS");
     private String resourcesPath = (new File((getClass().getResource("/")).getFile())).getAbsolutePath() + "/R_Scripts";
 
     
@@ -125,10 +125,10 @@ public class DecisionTreeService {
         saveCSV(data, dataPath);
 
 
-        String modelName = "DT_" + sdf.format(Calendar.getInstance().getTime()) + "_model";
+        String modelName = "DT-" + sdf.format(Calendar.getInstance().getTime()) + "-model";
         String modelPath = getModelPath(modelName);
         
-        String command = "Rscript " + resourcesPath + "/DTTraining.R " + dataPath + " " + modelName;
+        String command = "Rscript " + resourcesPath + "/DTTraining.R " + dataPath + " " + modelPath;
         String response = executeCommand(command);
         response += newline + modelName + " created!" + newline;
         
