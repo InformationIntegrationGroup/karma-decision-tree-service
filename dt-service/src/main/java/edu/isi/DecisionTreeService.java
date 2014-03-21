@@ -11,6 +11,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -26,22 +27,36 @@ public class DecisionTreeService {
      * 
      * @param data URL Encoded data
      * @param filepath Path of the file where the data has to be saved as CSV
+     * @param classColNum Column number of class labels
      * 
      */
-    private void saveCSV(String data, String filePath) throws IOException {
+    private void saveCSV(String data, String filePath, int classColNum) throws IOException {
 
         FileWriter writer = new FileWriter(filePath);
         String[] rows = data.split(newline);
+        classColNum--;
+        boolean classColumnSpecified = (classColNum >= 0);
         for(String rowString : rows) {
 
-                String[] row = rowString.split("\t");
-                for(int i = 0; i < row.length; i++)
-                {
+                String[] row = rowString.split(",");
+                for(int i = 0; i < row.length; i++) {
+
+                    if(i == classColNum)
+                        continue;
                     writer.append(row[i]);
                     if(i != row.length - 1)
-                    writer.append(",");
+                        writer.append(",");
+                
+                }
+                if(classColumnSpecified) {
+
+                    if(classColNum != row.length - 1)
+                        writer.append(",");
+                    writer.append(row[classColNum]);
+                    
                 }
                 writer.append(newline);
+
             }
             writer.close();
     
@@ -112,6 +127,7 @@ public class DecisionTreeService {
      * sent as POST, produces "text/plain" summary of the trained model.
      * 
      * @param data Training data
+     * @param classColNum Column number of class labels
      * 
      * @return String that contains details of trained model and unique model-name.
      */
@@ -119,10 +135,10 @@ public class DecisionTreeService {
     @Path("/train")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response train(String data) throws Exception {
+    public Response train(String data, @DefaultValue("-1") @QueryParam("classColumnNumber") int classColNum) throws Exception {
 
         String dataPath = resourcesPath + "/Train_" + sdf.format(Calendar.getInstance().getTime()) + ".csv";
-        saveCSV(data, dataPath);
+        saveCSV(data, dataPath, classColNum);
 
 
         String modelName = "DT-" + sdf.format(Calendar.getInstance().getTime()) + "-model";
@@ -143,6 +159,7 @@ public class DecisionTreeService {
      * 
      * @param data Testing data
      * @param outputType takes value: "predictions" or "confusion_matrix" to decide output-type for testing
+     * @param classColNum Column number of class labels
      * 
      * @return Output of the testing phase in the outputType format
      */
@@ -151,10 +168,11 @@ public class DecisionTreeService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
     public Response test(String data, @QueryParam("modelName") String modelName,
-                        @QueryParam("outputType") String outputType) throws Exception {
+                @DefaultValue("confusion_matrix") @QueryParam("outputType") String outputType,
+                @DefaultValue("-1") @QueryParam("classColumnNumber") int classColNum) throws Exception {
 
         String dataPath = resourcesPath + "/Test_" + sdf.format(Calendar.getInstance().getTime()) + ".csv";
-        saveCSV(data, dataPath);
+        saveCSV(data, dataPath, classColNum);
 
         String modelPath = getModelPath(modelName);
         
