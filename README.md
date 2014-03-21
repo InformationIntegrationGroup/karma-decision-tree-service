@@ -1,4 +1,4 @@
-karma-decision-tree-service
+Karma-Decision-Tree-Service
 ===========================
 
-karma-decision-tree-service
+A RESTful service based on Decision Tree implementation 'rpart' in R.
