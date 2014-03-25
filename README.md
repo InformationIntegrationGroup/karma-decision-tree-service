@@ -1,47 +1,47 @@
 Karma-Decision-Tree-Service
 ===========================
 
-A RESTful service based on Decision Tree implementation 'rpart' in R.
+A RESTful service for Decision Tree implementation 'rpart' in R.
 
-**To set up the service**
+### Setting up the service
 
-    * Compile and create WAR file:
+* Compile and create WAR file:
 
-        + Open Terminal and go to dt-service folder
-        + Run *mvn clean package*
-
-    * Copy the WAR file from *dt-service/target/* to *webapps* folder of Tomcat
-
-    * Start the Tomcat server
-
-**To run the service**
+    + Open Terminal and go to dt-service folder
+    + Run *mvn clean package*
     
-    * To train and create a Decision Tree model:
 
-        + Send a POST request with payload as contents of the training data in CSV format to
+* Copy the WAR file from *dt-service/target/* to *webapps* folder of Tomcat
+* Start the Tomcat server
 
-            *http://<host-name>:<port>/dt-service/api/dt/train*
+### Running the service
+    
+* To train and create a Decision Tree model:
 
-        + By default, the last column is assumed to contain the class labels
-        + To specify column-number of class labels, add *classColumnNumber* parameter:
+    + Send a POST request with payload as contents of the training data in CSV format to
 
-            *http://<host-name>:<port>/dt-service/api/dt/train?classColumnNumber=<column-number>*
+        *http://**host-name**:**port**/dt-service/api/dt/train*
 
-        + The response will contain a summary of the training phase and the name of the created model at its bottom
-        + Note down the model name (which starts with 'DT' and ends with 'model')
+    + By default, the last column is assumed to contain the class labels
+    + To specify column-number of class labels, add *classColumnNumber* parameter:
 
-    * To test a model:
+        *http://**host-name**:**port**/dt-service/api/dt/train?classColumnNumber=**column-number***
 
-        + Send a POST request with payload as contents of the testing data in CSV format to
+    + The response will contain a summary of the training phase and the name of the created model at its bottom
+    + Note down the model name (which starts with 'DT' and ends with 'model')
 
-            *http://<host-name>:<port>/dt-service/api/dt/test?modelName=<model-name>*
+* To test a model:
 
-        + To specify column-number of class labels, add *classColumnNumber* parameter:
+    + Send a POST request with payload as contents of the testing data in CSV format to
 
-            *http://<host-name>:<port>/dt-service/api/dt/test?modelName=<model-name>&classColumnNumber=<column-number>*
+        *http://**host-name**:**port**/dt-service/api/dt/test?modelName=**model-name***
 
-        + By default, the output of the testing phase is a confusion matrix
-        + To specify the output type of the testing phase, add *outputType* parameter:
+    + To specify column-number of class labels, add *classColumnNumber* parameter:
 
-            - *http://<host-name>:<port>/dt-service/api/dt/test?modelName=<model-name>&outputType=confusion_matrix*
-            - *http://<host-name>:<port>/dt-service/api/dt/test?modelName=<model-name>&outputType=predictions*
+        *http://**host-name**:**port**/dt-service/api/dt/test?modelName=**model-name**&classColumnNumber=**column-number***
+
+    + By default, the output of the testing phase is a confusion matrix
+    + To specify the output type of the testing phase, add *outputType* parameter:
+
+        - *http://**host-name**:**port**/dt-service/api/dt/test?modelName=**model-name**&outputType=confusion_matrix*
+        - *http://**host-name**:**port**/dt-service/api/dt/test?modelName=**model-name**&outputType=predictions*
