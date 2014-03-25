@@ -7,7 +7,7 @@ A RESTful service for Decision Tree implementation 'rpart' in R.
 
 * Compile and create WAR file:
 
-    + Open Terminal and go to dt-service folder
+    + Open Terminal and go to *dt-service* folder
     + Run *mvn clean package*
     
 
